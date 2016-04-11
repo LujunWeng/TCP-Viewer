@@ -14,12 +14,11 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
-        autoHideMenuBar: true,
         width: 800, 
         height: 600
     });
-    mainWindow.loadURL(['file://', __dirname, '/index.html'].join(''));
-    //mainWindow.webContents.openDevTools();
+    mainWindow.loadURL(['file://', __dirname, '/app/index.html'].join(''));
+    mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function () {
         mainWindow = null;
     });
