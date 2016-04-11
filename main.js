@@ -14,6 +14,7 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
+        autoHideMenuBar: true,
         width: 800, 
         height: 600
     });
