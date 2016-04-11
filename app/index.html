@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>TCP Viewer</title>
-</head>
-<body>
-    <h1 id="hello">Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-    <script type="text/javascript" src="./index.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>TCP Viewer</title>
+    </head>
+    <body>
+        <h1 id="hello">Hello World!</h1>
+        <main>
+            <pre id="info">
+            </pre>
+        </main>
+        <footer>
+            We are using node <script>document.write(process.versions.node)</script>,
+            Chrome <script>document.write(process.versions.chrome)</script>,
+            and Electron <script>document.write(process.versions.electron)</script>.
+        </footer>
+        <script type="text/javascript" src="./index.js"></script>
+    </body>
 </html>
