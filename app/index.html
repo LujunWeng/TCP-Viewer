@@ -6,23 +6,63 @@
         <link rel="stylesheet" type="text/css" href="../bower_components/Materialize/dist/css/materialize.css">
     </head>
     <body>
+        <nav>
+            <div class="nav-wrapper">
+              <a href="#" class="brand-logo right">TCP Viewer</a>
+              <ul id="nav-mobile" class="left">
+                <li><a href="#">Start</a></li>
+              </ul>
+            </div>
+        </nav>
         <main>
-        <table>
+        <table class="centered highlight responsive-table">
             <thead>
                 <tr>
                     <th data-field="pid">PID</th>
-                    <th data-field="saddr">Source Address</th>
-                    <th data-field="sport">Source Port</th>
-                    <th data-field="daddr">Destination Address</th>
-                    <th data-field="dport">Destination Port</th>
                     <th data-field="proto">Protocal</th>
+                    <th data-field="saddr">Source<br>Address</th>
+                    <th data-field="sport">Source<br>Port</th>
+                    <th data-field="daddr">Destination<br>Address</th>
+                    <th data-field="dport">Destination<br>Port</th>
                     <th data-field="state">State</th>
-                    <th data-field="send">Send</th>
-                    <th data-field="recv">Receive</th>
+                    <th data-field="send">Send<br><span class="size-unit">B</span></th>
+                    <th data-field="recv">Receive<br><span class="size-unit">B</span></th>
                 </tr>
             </thead>
             <tbody>
-                
+                <tr>
+                    <td>123456</td>
+                    <td>TCP</td>
+                    <td>127.0.0.1</td>
+                    <td>23</td>
+                    <td>234.2.3.222</td>
+                    <td>32</td>
+                    <td>ESTABLISHED</td>
+                    <td>1223</td>
+                    <td>4333</td>
+                </tr>
+                <tr>
+                    <td>123456</td>
+                    <td>UDP</td>
+                    <td>127.0.0.1</td>
+                    <td>23</td>
+                    <td>234.2.3.222</td>
+                    <td>32</td>
+                    <td>ESTABLISHED</td>
+                    <td>1223</td>
+                    <td>4333</td>
+                </tr>
+                <tr>
+                    <td>123456</td>
+                    <td>TCP</td>
+                    <td>127.0.0.1</td>
+                    <td>12312</td>
+                    <td>234.111.111.222</td>
+                    <td>32</td>
+                    <td>ESTABLISHED</td>
+                    <td>1223</td>
+                    <td>4333</td>
+                </tr>
             </tbody>
         </table>
         <pre id="info">
