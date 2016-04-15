@@ -20,23 +20,19 @@
                 <tr>
                     <th data-field="pid">PID</th>
                     <th data-field="proto">Protocal</th>
-                    <th data-field="saddr">Source<br>Address</th>
-                    <th data-field="sport">Source<br>Port</th>
-                    <th data-field="daddr">Destination<br>Address</th>
-                    <th data-field="dport">Destination<br>Port</th>
+                    <th data-field="shost">Source Host</th>
+                    <th data-field="dhost">Destination Host</th>
                     <th data-field="state">State</th>
-                    <th data-field="send">Send<br><span class="size-unit">B</span></th>
-                    <th data-field="recv">Receive<br><span class="size-unit">B</span></th>
+                    <th data-field="send">Send<span class="size-unit">(B)</span></th>
+                    <th data-field="recv">Receive<span class="size-unit">(B)</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>123456</td>
                     <td>TCP</td>
-                    <td>127.0.0.1</td>
-                    <td>23</td>
-                    <td>234.2.3.222</td>
-                    <td>32</td>
+                    <td>127.0.0.1:23</td>
+                    <td>234.2.3.222:32</td>
                     <td>ESTABLISHED</td>
                     <td>1223</td>
                     <td>4333</td>
@@ -44,10 +40,8 @@
                 <tr>
                     <td>123456</td>
                     <td>UDP</td>
-                    <td>127.0.0.1</td>
-                    <td>23</td>
-                    <td>234.2.3.222</td>
-                    <td>32</td>
+                    <td>127.0.0.1:23</td>
+                    <td>234.2.3.222:32</td>
                     <td>ESTABLISHED</td>
                     <td>1223</td>
                     <td>4333</td>
@@ -55,24 +49,15 @@
                 <tr>
                     <td>123456</td>
                     <td>TCP</td>
-                    <td>127.0.0.1</td>
-                    <td>12312</td>
-                    <td>234.111.111.222</td>
-                    <td>32</td>
+                    <td>127.0.0.1:1234</td>
+                    <td>234.111.111.222:23</td>
                     <td>ESTABLISHED</td>
                     <td>1223</td>
                     <td>4333</td>
                 </tr>
             </tbody>
         </table>
-        <pre id="info">
-        </pre>
         </main>
-        <footer>
-            We are using node <script>document.write(process.versions.node)</script>,
-            Chrome <script>document.write(process.versions.chrome)</script>,
-            and Electron <script>document.write(process.versions.electron)</script>.
-        </footer>
         <script type="text/javascript" src="./index.js"></script>
     </body>
 </html>
