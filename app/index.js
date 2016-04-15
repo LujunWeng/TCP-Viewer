@@ -7,5 +7,5 @@ const readLine = require('readline');
 const child = childProcess.spawn('../EventTrace/Debug/EventTrace.exe');
 const rl = readLine.createInterface({input: child.stdout});
 rl.on('line', (data) => {
-    $('#info').html(['<strong>', data, '</strong>'].join(''));
+    $('#info').html(['<strong>', data.split(' ').join('-'), '</strong>'].join(''));
 });

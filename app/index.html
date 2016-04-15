@@ -5,10 +5,27 @@
         <title>TCP Viewer</title>
     </head>
     <body>
-        <h1 id="hello">Hello World!</h1>
         <main>
-            <pre id="info">
-            </pre>
+        <table>
+            <thead>
+                <tr>
+                    <th data-field="pid">PID</th>
+                    <th data-field="saddr">Source Address</th>
+                    <th data-field="sport">Source Port</th>
+                    <th data-field="daddr">Destination Address</th>
+                    <th data-field="dport">Destination Port</th>
+                    <th data-field="proto">Protocal</th>
+                    <th data-field="state">State</th>
+                    <th data-field="send">Send</th>
+                    <th data-field="recv">Receive</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        <pre id="info">
+        </pre>
         </main>
         <footer>
             We are using node <script>document.write(process.versions.node)</script>,
