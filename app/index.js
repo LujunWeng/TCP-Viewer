@@ -26,8 +26,9 @@ Connection.prototype.generateRow = function() {
 var connList = [];
 
 rl.on('line', (data) => {
+    console.log(data);
     let jsonconn = JSON.parse(data);
-    if (jsonconn && typeof jsonconn === 'object') {
+    if (typeof jsonconn === 'object') {
         let conn = new Connection(jsonconn);
         console.log(conn);
     }
