@@ -18,6 +18,12 @@ var Connection = function (ce) {
     this.state = ce.type;
 };
 
+Connection.prototype.refresh = function(ce) {
+    this.sent += ce.size;
+    this.received += ce.size;
+    this.state = ce.type;
+};
+
 var ConnEvent = function (ce) {
     this.pid = parseInt(ce.PID);
     this.proto = ce.proto;
@@ -38,6 +44,46 @@ ConnEvent.prototype.belongsTo = function(conn) {
            this.dport === conn.dport;
 };
 
+function addConnEventToConnList(cnlist, ce) {
+    for (let i = 0; i < cnlist.length; ++i) {
+        if (ce.belongsTo(cnlist[i])) {
+            cnlist[i].refresh(ce);
+            return ;
+        }
+    }
+    cnlist.push(new Connection(ce));
+}
+
+function refreshConnListDisplay(cnlist) {
+    let $tbody = $("#conn-list");
+    $tbody.html('');
+    for (let i = 0; i < cnlist.length; ++i) {
+        let $tr = $("<tr>");
+        let $td = $("<td>").append(cnlist[i].pid);
+        $tr.append($td);
+
+        $td = $("<td>").append(cnlist[i].proto);
+        $tr.append($td);
+
+        $td = $("<td>").append([cnlist[i].saddr, ":", cnlist[i].sport].join(''));
+        $tr.append($td);
+
+        $td = $("<td>").append([cnlist[i].daddr, ":", cnlist[i].dport].join(''));
+        $tr.append($td);
+
+        $td = $("<td>").append(cnlist[i].state);
+        $tr.append($td);
+
+        $td = $("<td>").append(cnlist[i].sent);
+        $tr.append($td);
+
+        $td = $("<td>").append(cnlist[i].received);
+        $tr.append($td);
+
+        $tbody.append($tr);
+    }
+}
+
 var connList = [];
 
 rl.on('line', (data) => {
@@ -45,6 +91,8 @@ rl.on('line', (data) => {
     let jsonconn = JSON.parse(data);
     if (typeof jsonconn === 'object') {
         let ce = new ConnEvent(jsonconn);
-        console.log(ce);
+        addConnEventToConnList(connList, ce);
+        //console.log(connList);
+        refreshConnListDisplay(connList);
     }
 });
