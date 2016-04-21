@@ -74,7 +74,7 @@ ConnTrace.prototype.start = function () {
         if (typeof jsonconn === 'object') {
             let ce = new ConnEvent(jsonconn);
             this.connList.onConnEvent(ce);
-            refreshConnListDisplay(this.connList.items);
+            // refreshConnListDisplay(this.connList.items);
         }
     });
 };
@@ -85,17 +85,22 @@ ConnTrace.prototype.stop = function () {
     this.childProc = null;
 };
 
+
+
+
 var connTrace = new ConnTrace();
+var refreshing = false;
 
 $('#start-trace').click(function () {
     connTrace.start();
+    refreshing = true;
+    refresh();
 });
 
 $('#stop-trace').click(function () {
     connTrace.stop();
+    refreshing = false;
 });
-
-
 
 function refreshConnListDisplay(cnlist) {
     let $tbody = $("#conn-list");
@@ -126,3 +131,11 @@ function refreshConnListDisplay(cnlist) {
         $tbody.append($tr);
     }
 }
+
+function refresh() {
+    refreshConnListDisplay(connTrace.connList.items);
+    if (refreshing)
+        setTimeout(refresh, 1000);
+}
+
+
