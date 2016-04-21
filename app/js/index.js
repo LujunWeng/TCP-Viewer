@@ -7,10 +7,12 @@ const readLine = require('readline');
 var connList = [];
 
 var ConnTrace = {
+    traceSessionPath: '../EventTrace/Debug/StartTraceSession.exe',
+    eventTracePath: '../EventTrace/Debug/EventTrace.exe',
     childProc: null,
     start: function() {
-        const startTrace = childProcess.spawnSync('../EventTrace/Debug/StartTraceSession.exe');
-        this.childProc = childProcess.spawn('../EventTrace/Debug/EventTrace.exe');
+        const startTrace = childProcess.spawnSync(this.traceSessionPath);
+        this.childProc = childProcess.spawn(this.eventTracePath);
         const rl = readLine.createInterface({ input: this.childProc.stdout });
         rl.on('line', (data) => {
             console.log(data);
@@ -23,11 +25,11 @@ var ConnTrace = {
         });
     },
     stop: function() {
-        const startTrace = childProcess.spawn('../EventTrace/Debug/StartTraceSession.exe', ['close']);
+        const startTrace = childProcess.spawn(this.traceSessionPath, ['close']);
         this.childProc.kill();
         this.childProc = null;
     }
-}
+};
 
 $('#start-trace').click(function() {
     ConnTrace.start();
