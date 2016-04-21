@@ -4,42 +4,7 @@ window.$ = window.jQuery = require('../bower_components/jquery/dist/jquery.js');
 const childProcess = require('child_process');
 const readLine = require('readline');
 
-var connList = [];
-
-var ConnTrace = {
-    traceSessionPath: '../EventTrace/Debug/StartTraceSession.exe',
-    eventTracePath: '../EventTrace/Debug/EventTrace.exe',
-    childProc: null,
-    start: function() {
-        const startTrace = childProcess.spawnSync(this.traceSessionPath);
-        this.childProc = childProcess.spawn(this.eventTracePath);
-        const rl = readLine.createInterface({ input: this.childProc.stdout });
-        rl.on('line', (data) => {
-            console.log(data);
-            let jsonconn = JSON.parse(data);
-            if (typeof jsonconn === 'object') {
-                let ce = new ConnEvent(jsonconn);
-                addConnEventToConnList(connList, ce);
-                refreshConnListDisplay(connList);
-            }
-        });
-    },
-    stop: function() {
-        const startTrace = childProcess.spawn(this.traceSessionPath, ['close']);
-        this.childProc.kill();
-        this.childProc = null;
-    }
-};
-
-$('#start-trace').click(function() {
-    ConnTrace.start();
-});
-
-$('#stop-trace').click(function() {
-    ConnTrace.stop();
-});
-
-var Connection = function(ce) {
+var Connection = function (ce) {
     this.pid = ce.pid;
     this.proto = ce.proto;
     this.saddr = ce.saddr;
@@ -51,13 +16,13 @@ var Connection = function(ce) {
     this.state = ce.type;
 };
 
-Connection.prototype.refresh = function(ce) {
+Connection.prototype.refresh = function (ce) {
     this.sent += ce.size;
     this.received += ce.size;
     this.state = ce.type;
 };
 
-var ConnEvent = function(ce) {
+var ConnEvent = function (ce) {
     this.pid = parseInt(ce.PID);
     this.proto = ce.proto;
     this.saddr = ce.saddr;
@@ -68,7 +33,7 @@ var ConnEvent = function(ce) {
     this.type = parseInt(ce.type);
 };
 
-ConnEvent.prototype.belongsTo = function(conn) {
+ConnEvent.prototype.belongsTo = function (conn) {
     return this.pid === conn.pid &&
         this.proto === conn.proto &&
         this.saddr === conn.saddr &&
@@ -77,15 +42,60 @@ ConnEvent.prototype.belongsTo = function(conn) {
         this.dport === conn.dport;
 };
 
-function addConnEventToConnList(cnlist, ce) {
-    for (let i = 0; i < cnlist.length; ++i) {
-        if (ce.belongsTo(cnlist[i])) {
-            cnlist[i].refresh(ce);
+var ConnList = function () {
+    this.items = [];
+};
+
+ConnList.prototype.onConnEvent = function (ce) {
+    for (let i = 0; i < this.items.length; ++i) {
+        if (ce.belongsTo(this.items[i])) {
+            this.items[i].refresh(ce);
             return;
         }
     }
-    cnlist.push(new Connection(ce));
-}
+    let c = new Connection(ce);
+    this.items.push(c);
+};
+
+var ConnTrace = function () {
+    this.traceSessionPath = '../EventTrace/Debug/StartTraceSession.exe';
+    this.eventTracePath = '../EventTrace/Debug/EventTrace.exe';
+    this.childProc = null;
+    this.connList = new ConnList();
+};
+
+ConnTrace.prototype.start = function () {
+    childProcess.spawnSync(this.traceSessionPath);
+    this.childProc = childProcess.spawn(this.eventTracePath);
+    const rl = readLine.createInterface({input: this.childProc.stdout});
+    rl.on('line', (data) => {
+        console.log(data);
+        let jsonconn = JSON.parse(data);
+        if (typeof jsonconn === 'object') {
+            let ce = new ConnEvent(jsonconn);
+            this.connList.onConnEvent(ce);
+            refreshConnListDisplay(this.connList.items);
+        }
+    });
+};
+
+ConnTrace.prototype.stop = function () {
+    childProcess.spawn(this.traceSessionPath, ['close']);
+    this.childProc.kill();
+    this.childProc = null;
+};
+
+var connTrace = new ConnTrace();
+
+$('#start-trace').click(function () {
+    connTrace.start();
+});
+
+$('#stop-trace').click(function () {
+    connTrace.stop();
+});
+
+
 
 function refreshConnListDisplay(cnlist) {
     let $tbody = $("#conn-list");
