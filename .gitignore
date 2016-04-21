@@ -5,3 +5,6 @@ dist
 #files
 *.tgz
 *.log
+
+# Webstorm settings
+.idea/
