@@ -187,7 +187,7 @@ ConnTrace.prototype.start = function () {
     this.childProc = childProcess.spawn(this.eventTracePath);
     const rl = readLine.createInterface({input: this.childProc.stdout});
     rl.on('line', (data) => {
-        // console.log(data);
+        console.log(data);
         let jsonconn = JSON.parse(data);
         if (typeof jsonconn === 'object') {
             let ce = new ConnEvent(jsonconn);
@@ -209,7 +209,6 @@ var refreshing = false;
 $('#start-trace').click(function () {
     connTrace.start();
     refreshing = true;
-    refresh();
 });
 
 $('#stop-trace').click(function () {
@@ -217,41 +216,15 @@ $('#stop-trace').click(function () {
     refreshing = false;
 });
 
-function refreshConnListDisplay(cnlist) {
-    let $tbody = $("#conn-list");
-    $tbody.html('');
-    for (let i = 0; i < cnlist.length; ++i) {
-        let $tr = $("<tr>");
-        let $td = $("<td>").append(cnlist[i].pid);
-        $tr.append($td);
 
-        $td = $("<td>").append(cnlist[i].proto);
-        $tr.append($td);
-
-        $td = $("<td>").append([cnlist[i].saddr, ":", cnlist[i].sport].join(''));
-        $tr.append($td);
-
-        $td = $("<td>").append([cnlist[i].daddr, ":", cnlist[i].dport].join(''));
-        $tr.append($td);
-
-        $td = $("<td>").append(cnlist[i].state);
-        $tr.append($td);
-
-        $td = $("<td>").append(cnlist[i].sent);
-        $tr.append($td);
-
-        $td = $("<td>").append(cnlist[i].received);
-        $tr.append($td);
-
-        $tbody.append($tr);
-    }
-}
-
-function refresh() {
-    refreshConnListDisplay(connTrace.connList.items);
-    connTrace.connList.removeUnactive();
-    if (refreshing)
-        setTimeout(refresh, 1000);
-}
+angular.module('TCPViewer', [])
+    .controller('ListController', function ($scope) {
+        $scope.connections = connTrace.connList.items;
+        $scope.works = "Works";
+        setInterval(function () {
+            connTrace.connList.removeUnactive();
+            $scope.$apply();
+        }, 1000);
+    });
 
 
