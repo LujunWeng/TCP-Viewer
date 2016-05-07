@@ -203,22 +203,10 @@ ConnTrace.prototype.stop = function () {
     this.childProc = null;
 };
 
-var connTrace = new ConnTrace();
-var refreshing = false;
-
-$('#start-trace').click(function () {
-    connTrace.start();
-    refreshing = true;
-});
-
-$('#stop-trace').click(function () {
-    connTrace.stop();
-    refreshing = false;
-});
-
-
 angular.module('TCPViewer', [])
     .controller('ListController', function ($scope) {
+        var connTrace = new ConnTrace();
+        connTrace.start();
         $scope.connections = connTrace.connList.items;
         $scope.works = "Works";
         setInterval(function () {
