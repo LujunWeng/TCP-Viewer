@@ -1,6 +1,5 @@
-bower_components
-node_modules
-dist
+bower_components/
+node_modules/
 
 #files
 *.tgz
