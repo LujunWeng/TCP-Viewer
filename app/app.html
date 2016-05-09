@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <title>TCP Viewer</title>
     <link rel="stylesheet" type="text/css" href="../bower_components/Materialize/dist/css/materialize.css">
+    <link rel="stylesheet" href="app.css">
 </head>
 <body ng-controller="ListController">
 <nav>
     <div class="nav-wrapper">
-        <a href="#" class="brand-logo center">TCP Viewer</a>
+        <a href="#" class="brand-logo center">TCP/UDP Viewer</a>
         <ul id="nav-mobile" class="left">
-            <!-- <li><a id="stop-trace">Stop</a></li> -->
+            <li><a id="stop-trace">Statistics</a></li>
         </ul>
     </div>
 </nav>
@@ -18,17 +19,38 @@
     <table class="centered highlight responsive-table">
         <thead>
         <tr>
-            <th data-field="pid">PID</th>
-            <th data-field="proto">Protocol</th>
-            <th data-field="shost">Source Host</th>
-            <th data-field="dhost">Destination Host</th>
-            <th data-field="state">State</th>
-            <th data-field="send">Send<span class="size-unit">(B)</span></th>
-            <th data-field="recv">Receive<span class="size-unit">(B)</span></th>
+            <th data-field="pid"
+                ng-click="sortData('pid')">PID
+                <div ng-class="getSortClass('pid')"></div>
+            </th>
+            <th data-field="proto"
+                ng-click="sortData('proto')">Protocol
+                <div ng-class="getSortClass('proto')"></div>
+            </th>
+            <th data-field="shost"
+                ng-click="sortData('saddr')">Source Host
+                <div ng-class="getSortClass('saddr')"></div>
+            </th>
+            <th data-field="dhost"
+                ng-click="sortData('daddr')">Destination Host
+                <div ng-class="getSortClass('daddr')"></div>
+            </th>
+            <th data-field="state"
+                ng-click="sortData('state')">State
+                <div ng-class="getSortClass('state')"></div>
+            </th>
+            <th data-field="send"
+                ng-click="sortData('sent')">Send<span class="size-unit">(B)</span>
+                <div ng-class="getSortClass('sent')"></div>
+            </th>
+            <th data-field="recv"
+                ng-click="sortData('received')">Receive<span class="size-unit">(B)</span>
+                <div ng-class="getSortClass('received')"></div>
+            </th>
         </tr>
         </thead>
         <tbody id="conn-list">
-        <tr ng-repeat="connection in connections">
+        <tr ng-repeat="connection in connections | orderBy:sortColumn:reverseSort">
             <td>{{ connection.pid }}</td>
             <td>{{ connection.proto }}</td>
             <td>{{ connection.saddr + ":" + connection.sport }}</td>
