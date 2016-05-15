@@ -148,6 +148,9 @@ var ConnList = function () {
     this.items = [];
 };
 
+ConnList.prototype.resetTotalSize = function () {
+};
+
 ConnList.prototype.onConnEvent = function (ce) {
     for (let i = 0; i < this.items.length; ++i) {
         if (ce.belongsTo(this.items[i])) {
@@ -181,6 +184,7 @@ var ConnTrace = function () {
     this.eventTracePath = '../EventTrace/Debug/EventTrace.exe';
     this.childProc = null;
     this.connList = new ConnList();
+    this.stats = new Statistics();
 };
 
 ConnTrace.prototype.start = function () {
@@ -193,6 +197,7 @@ ConnTrace.prototype.start = function () {
         if (typeof jsonconn === 'object') {
             let ce = new ConnEvent(jsonconn);
             this.connList.onConnEvent(ce);
+            this.stats.onConnEvent(ce);
             // refreshConnListDisplay(this.connList.items);
         }
     });
@@ -204,39 +209,73 @@ ConnTrace.prototype.stop = function () {
     this.childProc = null;
 };
 
+var Statistics = function () {
+    this.totalSize = 0;
+};
+
+Statistics.prototype.onConnEvent = function (ce) {
+    this.totalSize += ce.size;
+};
+
+Statistics.prototype.resetTotalSize = function () {
+    this.totalSize = 0;
+};
+
 var tcpviewr = angular.module('TCPViewer', ['chart.js', 'ngAnimate']);
 
-tcpviewr.controller('mainController', function ($scope) {
-    var connTrace = new ConnTrace();
-    connTrace.start();
-    $scope.connections = connTrace.connList.items;
-    $scope.works = "Works";
-    setInterval(function () {
-        connTrace.connList.removeUnactive();
-        $scope.$apply();
-    }, 1000);
+tcpviewr.controller('mainController', ['$scope', '$interval', '$window',
+    function ($scope, $interval, $window) {
+        var connTrace = new ConnTrace();
+        connTrace.start();
+        $scope.connections = connTrace.connList.items;
 
-    $scope.sortColumn = "";
-    $scope.reverseSort = false;
-    $scope.sortData = function (column) {
-        $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
-        $scope.sortColumn = column;
-    };
-    $scope.getSortClass = function (column) {
-        if ($scope.sortColumn == column) {
-            return $scope.reverseSort ? 'arrow-down' : 'arrow-up';
-        }
-        return '';
-    };
+        $scope.sortColumn = "";
+        $scope.reverseSort = false;
+        $scope.sortData = function (column) {
+            $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+            $scope.sortColumn = column;
+        };
+        $scope.getSortClass = function (column) {
+            if ($scope.sortColumn == column) {
+                return $scope.reverseSort ? 'arrow-down' : 'arrow-up';
+            }
+            return '';
+        };
 
-    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-    $scope.data = [
-        [65, 59, 80, 81, 56, 55, 40]
-    ];
-    $scope.chartIsShown = false;
-    $scope.toggleChart = function () {
-        $scope.chartIsShown = !$scope.chartIsShown;
-    }
-});
+        $scope.labels = [];
+        $scope.data = [[]];
+        $scope.options = {
+            animation: false,
+            showTooltips: false,
+            pointDot: false,
+            datasetStrokeWidth: 0.5
+        };
+        $scope.chartIsShown = false;
+        $scope.toggleChart = function () {
+            $scope.chartIsShown = !$scope.chartIsShown;
+        };
+        $scope.collectData = function () {
+            if ($scope.labels.length >= 60) {
+                $scope.labels.shift();
+                $scope.data[0].shift();
+            }
+            $scope.labels.push('');
+            $scope.data[0].push(connTrace.stats.totalSize);
+            connTrace.stats.resetTotalSize();
+        };
+
+        var stop = $interval(function () {
+            connTrace.connList.removeUnactive();
+            $scope.collectData();
+        }, 1000);
+
+        $scope.$on('$destroy', function() {
+            // Make sure that the interval is destroyed too
+            if (angular.isDefined(stop)) {
+                $interval.cancel(stop);
+                stop = undefined;
+            }
+        });
+    }]);
 
 
