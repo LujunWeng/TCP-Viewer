@@ -19,3 +19,12 @@ main th {
     border-top: 10px solid black;
     display: inline-block;
 }
+
+.ng-hide-add, .ng-hide-remove {
+    transition: all linear 0.5s;
+}
+
+.ng-hide {
+    line-height: 0;
+    opacity: 0;
+}

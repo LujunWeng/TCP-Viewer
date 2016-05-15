@@ -1,6 +1,5 @@
 'use strict'
 
-window.$ = window.jQuery = require('../bower_components/jquery/dist/jquery.js');
 const childProcess = require('child_process');
 const readLine = require('readline');
 
@@ -115,10 +114,12 @@ Connection.prototype.refreshState = function (ce) {
     };
     this.state = stateMap[this.proto](this.state, ce.type);
     switch (ce.type) {
-        case 10: case 26:
+        case 10:
+        case 26:
             this.sent += ce.size;
             break;
-        case 11: case 27:
+        case 11:
+        case 27:
             this.received += ce.size;
     }
 };
@@ -203,29 +204,39 @@ ConnTrace.prototype.stop = function () {
     this.childProc = null;
 };
 
-angular.module('TCPViewer', [])
-    .controller('ListController', function ($scope) {
-        var connTrace = new ConnTrace();
-        connTrace.start();
-        $scope.connections = connTrace.connList.items;
-        $scope.works = "Works";
-        setInterval(function () {
-            connTrace.connList.removeUnactive();
-            $scope.$apply();
-        }, 1000);
+var tcpviewr = angular.module('TCPViewer', ['chart.js', 'ngAnimate']);
 
-        $scope.sortColumn = "";
-        $scope.reverseSort = false;
-        $scope.sortData = function (column) {
-            $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
-            $scope.sortColumn = column;
-        };
-        $scope.getSortClass = function (column) {
-            if ($scope.sortColumn == column) {
-                return $scope.reverseSort ? 'arrow-down' : 'arrow-up';
-            }
-            return '';
+tcpviewr.controller('mainController', function ($scope) {
+    var connTrace = new ConnTrace();
+    connTrace.start();
+    $scope.connections = connTrace.connList.items;
+    $scope.works = "Works";
+    setInterval(function () {
+        connTrace.connList.removeUnactive();
+        $scope.$apply();
+    }, 1000);
+
+    $scope.sortColumn = "";
+    $scope.reverseSort = false;
+    $scope.sortData = function (column) {
+        $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+        $scope.sortColumn = column;
+    };
+    $scope.getSortClass = function (column) {
+        if ($scope.sortColumn == column) {
+            return $scope.reverseSort ? 'arrow-down' : 'arrow-up';
         }
-    });
+        return '';
+    };
+
+    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+    $scope.data = [
+        [65, 59, 80, 81, 56, 55, 40]
+    ];
+    $scope.chartIsShown = false;
+    $scope.toggleChart = function () {
+        $scope.chartIsShown = !$scope.chartIsShown;
+    }
+});
 
 
