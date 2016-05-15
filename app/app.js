@@ -173,8 +173,6 @@ ConnList.prototype.removeUnactive = function () {
         if (this.items[i].proto === 'UDP' && this.items[i].unactiveCnt > 60) {
             this.items.splice(i, 1);
 
-        } else if (this.items[i].proto === 'TCP' && this.items[i].unactiveCnt > 120) {
-            this.items.splice(i, 1);
         }
     }
 };
