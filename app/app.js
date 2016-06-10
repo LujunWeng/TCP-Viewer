@@ -210,7 +210,6 @@ ConnTrace.prototype.stop = function () {
 var Statistics = function () {
     this.totalSize = 0;
 };
-
 Statistics.prototype.onConnEvent = function (ce) {
     this.totalSize += ce.size;
 };
